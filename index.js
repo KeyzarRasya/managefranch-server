@@ -2,6 +2,8 @@ require('dotenv').config();
 const express = require('express')
 const mongoose = require('mongoose')
 const umkmRoute = require('./src/routes/Umkm')
+const cookieParser = require('cookie-parser')
+const session = require('express-session');
 
 mongoose.connect(process.env.MONGODB_URI)
 .then(res => console.log('Connected to database'))
@@ -9,6 +11,13 @@ mongoose.connect(process.env.MONGODB_URI)
 
 const app = express();
 const port = process.env.PORT || 3001;
+
+app.use(cookieParser(process.env.COOKIE_SECRET))
+app.use(session({
+    secret:process.env.SESSION_SECRET,
+    resave:false,
+    saveUninitialized:false
+}))
 
 app.use(express.json())
 app.use(express.urlencoded({

@@ -14,7 +14,7 @@ const loginCredential = async(umkm) => {
         return {status:406, message:'You enter the wrong email'}
     }
     const isValid = await bcrypt.compare(umkm.password, findUmkm.password);
-    return isValid ? {status:200, message:'Login success'} : {status:406, message:'Wrong password'};
+    return isValid ? {status:200, message:'Login success', umkm:findUmkm} : {status:406, message:'Wrong password'};
 }
 
 module.exports = {saveAccount, loginCredential};
