@@ -16,6 +16,14 @@ const productSchema = new mongoose.Schema({
     harga:{
         type:Number,
         require:true,
+    },
+    requestFrom:{
+        type:mongoose.Schema.ObjectId,
+        ref:'Franchise'
+    },
+    isCompleted:{
+        type:Boolean,
+        default:false
     }
 })
 

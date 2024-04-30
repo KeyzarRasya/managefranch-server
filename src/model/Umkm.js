@@ -35,6 +35,10 @@ const umkmSchema = new mongoose.Schema({
     premiumToken:{
         type:String
     },
+    productRequest:{
+        type:mongoose.Schema.ObjectId,
+        ref:'Product'
+    },
     product:[
         {
             type:mongoose.Schema.ObjectId,
