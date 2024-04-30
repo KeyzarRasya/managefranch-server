@@ -1,5 +1,6 @@
 const Umkm = require('../model/Umkm');
 const Franchise = require('../model/Franchise')
+const Product = require('../model/Product');
 const bcrypt = require('bcrypt');
 const {v4:uuid} = require('uuid')
 
@@ -64,4 +65,16 @@ const deleteFranchise = async(franchiseID, umkmID) => {
     return {status:200, message:'Successfuly deleted a franchise', deletedFranchise:findFranchise};
 }
 
-module.exports = {saveAccount, loginCredential, insertFranchise, deleteFranchise};
+const saveProduct = async(product, umkmId) => {
+    const products = new Product(product);
+    const umkm = await Umkm.findById(umkmId);
+    if(!umkm){
+        return {status:401, message:'You have to login first'};
+    }
+    umkm.product.push(products);
+    await umkm.save();
+    await products.save();
+    return {status:200, message:'Product saved', umkm, products};
+}
+
+module.exports = {saveAccount, loginCredential, insertFranchise, deleteFranchise, saveProduct};

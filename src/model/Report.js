@@ -5,18 +5,18 @@ const reportSchema = new mongoose.Schema({
         type:Date,
         default:Date.now()
     },
-    pemasukan:[
-        {
-            type:mongoose.Schema.ObjectId,
-            ref:'InOut',
-            default:[]
-        }
-    ],
-    pengeluaran:[
-        {
-            type:mongoose.Schema.ObjectId,
-            ref:'InOut',
-            default:[]
-        }
-    ]
-})
+    pemasukan: [{
+        nama: { type: String, required: true },
+        biayaSatuan: { type: Number, required: true },
+        kuantitas: { type: Number, required: true }
+      }],
+      pengeluaran: [{
+        nama: { type: String, required: true },
+        biayaSatuan: { type: Number, required: true },
+        kuantitas: { type: Number, required: true }
+      }]
+});
+
+const Model = mongoose.model('Report', reportSchema);
+
+module.exports = Model;

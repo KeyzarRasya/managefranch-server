@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express')
 const mongoose = require('mongoose')
 const umkmRoute = require('./src/routes/Umkm')
+const franchiseRouter = require('./src/routes/Franchise');
 const cookieParser = require('cookie-parser')
 const session = require('express-session');
 
@@ -25,6 +26,7 @@ app.use(express.urlencoded({
 }))
 
 app.use('/umkm', umkmRoute);
+app.use('/franchise', franchiseRouter);
 
 app.listen(port, () => {
     console.log(`Server running at port ${port}`);

@@ -7,14 +7,18 @@ const productSchema = new mongoose.Schema({
     },
     image:{
         type:String,
-        require:true
+        default:""
     },
     kuantitas:{
         type:Number,
         require:true,
     },
-    price:{
+    harga:{
         type:Number,
         require:true,
     }
 })
+
+const Model = mongoose.model('Product', productSchema);
+
+module.exports = Model;
