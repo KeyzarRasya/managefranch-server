@@ -43,4 +43,25 @@ const insertFranchise = async(metadata, umkmId) => {
     return {status:200, message:'Franchise added!', franchise:newFranchise};
 }
 
-module.exports = {saveAccount, loginCredential, insertFranchise};
+const deleteFranchise = async(franchiseID, umkmID) => {
+    const findUmkm = await Umkm.findById(umkmID);
+    const findFranchise = await Franchise.findById(franchiseID);
+    if(!findUmkm && !findFranchise){
+        return {status:401, message:'You are not allowed to do this action'};
+    }
+    let deletedFranchiseIndex = -1; 
+    findUmkm.franchise.forEach((franch, index) => {
+        if(franch.toString() === franchiseID){
+            deletedFranchiseIndex = index;
+        }
+    })
+    if(deletedFranchiseIndex === -1){
+        return {status:404, message:'there is no franchise to delete'};
+    }
+    findUmkm.franchise.splice(deletedFranchiseIndex, 1);
+    await Franchise.deleteOne({_id:findFranchise._id});
+    await findUmkm.save();
+    return {status:200, message:'Successfuly deleted a franchise', deletedFranchise:findFranchise};
+}
+
+module.exports = {saveAccount, loginCredential, insertFranchise, deleteFranchise};

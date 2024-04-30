@@ -1,7 +1,7 @@
 const express = require('express')
 const multer = require('multer')
 const path = require('path')
-const {createAccount, login, addFranchise} = require('../controller/Umkm')
+const {createAccount, login, addFranchise, dropFranchise} = require('../controller/Umkm')
 
 const storageLogo = multer.diskStorage({
     destination: (req, file, callback) => {
@@ -19,5 +19,6 @@ const router = express.Router();
 router.post('/signup', createAccount);
 router.post('/login', login);
 router.post('/add/franchise', addFranchise);
+router.post('/drop/franchise/:franchId', dropFranchise);
 
 module.exports = router;
