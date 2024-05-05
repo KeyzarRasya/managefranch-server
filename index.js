@@ -5,6 +5,7 @@ const umkmRoute = require('./src/routes/Umkm')
 const franchiseRouter = require('./src/routes/Franchise');
 const cookieParser = require('cookie-parser')
 const session = require('express-session');
+const cors = require('cors');
 
 mongoose.connect(process.env.MONGODB_URI)
 .then(res => console.log('Connected to database'))
@@ -24,6 +25,7 @@ app.use(express.json())
 app.use(express.urlencoded({
     extended:true
 }))
+app.use(cors())
 
 app.use('/umkm', umkmRoute);
 app.use('/franchise', franchiseRouter);
