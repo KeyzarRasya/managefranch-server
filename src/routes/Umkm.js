@@ -61,7 +61,7 @@ router.get('/purchase/:packet', async (req, res) => {
 
 })
 
-router.get('/finish', (req, res) => {
+router.post('/finish', (req, res) => {
     res.redirect('https://managefranch-client.vercel.app/finish');
 })
 
