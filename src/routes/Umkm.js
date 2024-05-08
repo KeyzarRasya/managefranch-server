@@ -46,11 +46,11 @@ router.get('/purchase/:packet', async (req, res) => {
             "last_name":"Athallah",
             "email":email
         },
-        "item-details":{
+        "item-details":[{
             "price":parseInt(packet),
             "name":packet === "30000" ? "Newpreneur" : "Propreneur",
             "token":uuid()
-        }
+        }]
     } 
     
     if(packet === "30000"){
@@ -66,7 +66,8 @@ router.get('/purchase/:packet', async (req, res) => {
 
 })
 
-router.post('/finish', (req, res) => {
+router.get('/finish', (req, res) => {
+    const {order_id, status_code, transaction_status} = req.query
     res.send('oke');
 })
 
