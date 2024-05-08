@@ -77,7 +77,7 @@ router.get('/finish', async(req, res) => {
     const newToken = new Tokenizer({token:order_id});
     // await newToken.save();
     console.log(newToken);
-    res.send({token:response.data.order_id});
+    res.send({token:order_id});
 })
 
 module.exports = router;
