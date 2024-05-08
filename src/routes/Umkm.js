@@ -81,10 +81,6 @@ router.get('/finish', async(req, res) => {
             'Authorization':`Basic ${btoa(process.env.SERVER_KEY)}`
         }
     })
-
-    if(response.data.transaction_status !== 'capture'){
-        return res.send({message:'please finish your payment first'})
-    }
     const newToken = new Tokenizer({token:response.data.order_id});
     await newToken.save();
     res.send({token:response.data.order_id});
