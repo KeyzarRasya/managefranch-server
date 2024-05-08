@@ -74,15 +74,9 @@ router.get('/finish', async(req, res) => {
     if(status_code !== "200"){
         return res.send('transaction pending')
     }
-    const response = await axios.get(`${process.env.PG_BASE}/v2/${order_id}/status`, {
-        headers:{
-            'Content-Type':'application/json',
-            'Accept':'application/json',
-            'Authorization':`Basic ${btoa(process.env.SERVER_KEY)}`
-        }
-    })
-    const newToken = new Tokenizer({token:response.data.order_id});
+    const newToken = new Tokenizer({token:order_id});
     // await newToken.save();
+    console.log(newToken);
     res.send({token:response.data.order_id});
 })
 
