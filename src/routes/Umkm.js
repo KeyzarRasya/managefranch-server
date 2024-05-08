@@ -45,6 +45,11 @@ router.get('/purchase/:packet', async (req, res) => {
             "first_name":"KeyzarRasya",
             "last_name":"Athallah",
             "email":email
+        },
+        "item-details":{
+            "price":parseInt(packet),
+            "name":packet === "30000" ? "Newpreneur" : "Propreneur",
+            "token":uuid()
         }
     } 
     
