@@ -3,7 +3,8 @@ const multer = require('multer')
 const path = require('path')
 const {v4:uuid} = require('uuid')
 const midtrans = require('midtrans-client');
-const {createAccount, login, addFranchise, dropFranchise, addProduct} = require('../controller/Umkm')
+const {createAccount, login, addFranchise, dropFranchise, addProduct} = require('../controller/Umkm');
+const { default: axios } = require('axios');
 
 let snap = new midtrans.Snap({
     isProduction:false,
@@ -66,9 +67,19 @@ router.get('/purchase/:packet', async (req, res) => {
 
 })
 
-router.get('/finish', (req, res) => {
+router.get('/finish', async(req, res) => {
     const {order_id, status_code, transaction_status} = req.query
-    res.send('oke');
+    if(status_code !== "200"){
+        return res.send('transaction pending')
+    }
+    const response = await axios.get(`${process.env.PG_BASE}/v2/${order_id}/status`, {
+        headers:{
+            'Content-Type':'application/json',
+            'Accept':'application/json',
+            'Authorization':`Basic ${btoa(process.env.SERVER_KEY)}`
+        }
+    })
+    res.send(response);
 })
 
 module.exports = router;
