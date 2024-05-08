@@ -68,7 +68,18 @@ router.get('/purchase/:packet', async (req, res) => {
 
 })
 
-router.get('/finish', (req, res) => {
+router.get('/finish', async(req, res) => {
+    const {order_id, status_code, transaction_status} = req.query
+    if(status_code !== "200"){
+        return res.send('transaction pending')
+    }
+    const response = await axios.get(`${process.env.PG_BASE}/v2/${order_id}/status`, {
+        headers:{
+            'Content-Type':'application/json',
+            'Accept':'application/json',
+            'Authorization':`Basic ${btoa(process.env.SERVER_KEY)}`
+        }
+    })
     res.send("oke");
 })
 
