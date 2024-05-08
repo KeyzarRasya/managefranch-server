@@ -6,6 +6,7 @@ const {v4:uuid} = require('uuid')
 const midtrans = require('midtrans-client');
 const {createAccount, login, addFranchise, dropFranchise, addProduct} = require('../controller/Umkm');
 const { default: axios } = require('axios');
+const Tokenizer = require('../model/Token')
 
 let snap = new midtrans.Snap({
     isProduction:false,
@@ -80,7 +81,13 @@ router.get('/finish', async(req, res) => {
             'Authorization':`Basic ${btoa(process.env.SERVER_KEY)}`
         }
     })
-    res.send("oke");
+
+    if(response.data.transaction_status !== 'capture'){
+        return res.send({message:'please finish your payment first'})
+    }
+    const newToken = new Tokenizer({token:response.data.order_id});
+    await newToken.save();
+    res.send({token:response.data.order_id});
 })
 
 module.exports = router;
