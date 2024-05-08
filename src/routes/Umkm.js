@@ -82,7 +82,7 @@ router.get('/finish', async(req, res) => {
         }
     })
     const newToken = new Tokenizer({token:response.data.order_id});
-    await newToken.save();
+    // await newToken.save();
     res.send({token:response.data.order_id});
 })
 
