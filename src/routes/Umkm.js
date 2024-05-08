@@ -75,7 +75,7 @@ router.get('/finish', async(req, res) => {
         return res.send('transaction pending')
     }
     const newToken = new Tokenizer({token:order_id});
-    // await newToken.save();
+    await newToken.save();
     console.log(newToken);
     res.send({token:order_id});
 })
