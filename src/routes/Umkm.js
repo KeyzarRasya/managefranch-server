@@ -77,7 +77,7 @@ router.get('/finish', async(req, res) => {
     const newToken = new Tokenizer({token:order_id});
     await newToken.save();
     console.log(newToken);
-    res.send({token:order_id});
+    res.redirect(`https://managefranch-client.vercel.app/signup/${order_id}`);
 })
 
 module.exports = router;
