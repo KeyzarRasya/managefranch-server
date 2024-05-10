@@ -1,18 +1,29 @@
 const Umkm = require('../model/Umkm');
 const Franchise = require('../model/Franchise')
 const Product = require('../model/Product');
+const Tokenizer = require('../model/Token')
 const bcrypt = require('bcrypt');
 const {v4:uuid} = require('uuid')
 
 
 const saveAccount = async(umkm) => {
     const findEmail = await Umkm.findOne({email:umkm.email});
+    const findToken = await Tokenizer.findOne({token:umkm.token})
     if(findEmail){
         return {status:401, message:'Email already used'};
     }
+    if(!findToken){
+        return {status:401, message:'Unknown token'};
+    }
+    if(findToken.isUsed){
+        return {status:401, message:'token is already used'};
+    }
     umkm.password = await bcrypt.hash(umkm.password, 12);
     const newUmkm = new Umkm(umkm);
+    newUmkm.premiumToken = findToken.token;
+    findToken.isUsed = true;
     await newUmkm.save();
+    await findToken.save();
     return {status:200, message:"account created successfully", umkm:newUmkm};
 }
 

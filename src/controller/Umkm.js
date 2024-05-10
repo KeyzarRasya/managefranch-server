@@ -3,8 +3,8 @@ const {saveAccount, loginCredential, insertFranchise, deleteFranchise, saveProdu
 const jwt = require('jsonwebtoken');
 
 const createAccount = async(req, res) => {
-    const {email, password, pemilik, alamat} = req.body;
-    const save = await saveAccount({email, password, pemilik, alamat});
+    const {email, password, pemilik, alamat, token} = req.body;
+    const save = await saveAccount({email, password, pemilik, alamat, token});
     res.send(save);
 }
 
