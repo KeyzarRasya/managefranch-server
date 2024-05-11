@@ -4,6 +4,12 @@ const Product = require('../model/Product');
 const Tokenizer = require('../model/Token')
 const bcrypt = require('bcrypt');
 const {v4:uuid} = require('uuid')
+const midtrans = require('midtrans-client')
+
+let snap = new midtrans.Snap({
+    isProduction:false,
+    serverKey:process.env.SERVER_KEY
+})
 
 
 const saveAccount = async(umkm) => {
@@ -94,4 +100,37 @@ const saveProduct = async(product, umkmId) => {
     return {status:200, message:'Product saved', umkm, products};
 }
 
-module.exports = {saveAccount, loginCredential, insertFranchise, deleteFranchise, saveProduct};
+const generateTransaction = async(packet, email) => {
+    let  parameter = {
+        "transaction_details":{
+            "order_id":uuid(),
+            "gross_amount":0
+        },
+        "credit_card":{
+            "secure":true
+        },
+        "customer_details":{
+            "first_name":"KeyzarRasya",
+            "last_name":"Athallah",
+            "email":email
+        },
+        "item-details":[{
+            "price":parseInt(packet),
+            "name":packet === "30000" ? "Newpreneur" : "Propreneur",
+            "token":uuid()
+        }]
+    } 
+    
+    if(packet === "30000"){
+       parameter.transaction_details.gross_amount = 30000
+    }else if(packet === "50000"){
+        parameter.transaction_details.gross_amount = 50000
+    }else{
+        return res.status(400).send('Please choose a packet')
+    }
+
+    const transaction = await snap.createTransaction(parameter);
+    return transaction;
+}
+
+module.exports = {saveAccount, loginCredential, insertFranchise, deleteFranchise, saveProduct, generateTransaction};

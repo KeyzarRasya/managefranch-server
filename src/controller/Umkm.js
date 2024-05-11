@@ -1,5 +1,5 @@
 const { jwtDecode } = require('jwt-decode');
-const {saveAccount, loginCredential, insertFranchise, deleteFranchise, saveProduct} = require('../service/Umkm')
+const {saveAccount, loginCredential, insertFranchise, deleteFranchise, saveProduct, generateTransaction} = require('../service/Umkm')
 const jwt = require('jsonwebtoken');
 
 const createAccount = async(req, res) => {
@@ -40,5 +40,12 @@ const addProduct = async(req, res) => {
     res.send(product);
 }
 
+const createTransaction = async(req, res) => {
+    const {packet} = req.params;
+    const {email} = req.query;
+    const transaction = await generateTransaction(packet, email);
+    res.redirect(transaction.redirect_url); 
+}
 
-module.exports = {createAccount, addProduct,login, addFranchise, dropFranchise};
+
+module.exports = {createAccount, addProduct,login, addFranchise, dropFranchise, createTransaction};
