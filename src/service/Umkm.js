@@ -29,8 +29,13 @@ const saveAccount = async(umkm) => {
 
 const loginCredential = async(umkm) => {
     const findUmkm = await Umkm.findOne({email:umkm.email});
+    console.log(findUmkm);
     if(!findUmkm){
         return {status:406, message:'You enter the wrong email'}
+    }
+    const findToken = await Tokenizer.findOne({token:findUmkm.premiumToken});
+    if(!findToken){
+        return {status:401, message:'you dont have premium access'};
     }
     const isValid = await bcrypt.compare(umkm.password, findUmkm.password);
     return isValid ? {status:200, message:'Login success', umkm:findUmkm} : {status:406, message:'Wrong password'};
