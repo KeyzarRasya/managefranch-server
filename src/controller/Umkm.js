@@ -44,7 +44,7 @@ const createTransaction = async(req, res) => {
     const {packet} = req.params;
     const {email} = req.query;
     const transaction = await generateTransaction(packet, email);
-    res.send(transaction.redirect_url); 
+    res.redirect(transaction.redirect_url); 
 }
 
 const paymentFinish = async(req, res) => {
