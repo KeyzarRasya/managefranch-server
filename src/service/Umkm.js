@@ -4,7 +4,8 @@ const Product = require('../model/Product');
 const Tokenizer = require('../model/Token')
 const bcrypt = require('bcrypt');
 const {v4:uuid} = require('uuid')
-const midtrans = require('midtrans-client')
+const midtrans = require('midtrans-client');
+const { default: axios } = require('axios');
 
 let snap = new midtrans.Snap({
     isProduction:false,
@@ -133,4 +134,37 @@ const generateTransaction = async(packet, email) => {
     return transaction;
 }
 
-module.exports = {saveAccount, loginCredential, insertFranchise, deleteFranchise, saveProduct, generateTransaction};
+const afterPayment = async(paymentInfo) => {
+    const response = await axios({
+        method:'GET',
+        url:`https://api.sandbox.midtrans.com/v2/${paymentInfo.order_id}/status`,
+        headers:{
+            'Accept':'application/json',
+            'Content-Type':'application/json',
+            'Authorization':`Basic ${btoa(process.env.SERVER_KEY)}`
+        }
+    })
+    const data = response.data;
+    if(data.status_code !== "200" && data.transaction_status !== "settlement"){
+        return {response:data, status:401};
+    }
+
+    const findOrderToken = await Tokenizer.findOne({order_id:data.order_id});
+    console.log(findOrderToken)
+    if(findOrderToken){
+        return {status:200, token:findOrderToken.token}
+    }
+    const tokenid = uuid();
+    const newToken = new Tokenizer({token:tokenid, order_id:data.order_id});
+    await newToken.save();
+    return {response:response.data, token:tokenid, status:200};
+}
+
+module.exports = 
+{saveAccount, 
+    loginCredential, 
+    insertFranchise, 
+    deleteFranchise, 
+    saveProduct, 
+    generateTransaction, 
+    afterPayment};

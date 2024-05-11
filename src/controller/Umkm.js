@@ -1,5 +1,5 @@
 const { jwtDecode } = require('jwt-decode');
-const {saveAccount, loginCredential, insertFranchise, deleteFranchise, saveProduct, generateTransaction} = require('../service/Umkm')
+const {saveAccount, loginCredential, insertFranchise, deleteFranchise, saveProduct, generateTransaction, afterPayment} = require('../service/Umkm')
 const jwt = require('jsonwebtoken');
 
 const createAccount = async(req, res) => {
@@ -44,8 +44,17 @@ const createTransaction = async(req, res) => {
     const {packet} = req.params;
     const {email} = req.query;
     const transaction = await generateTransaction(packet, email);
-    res.redirect(transaction.redirect_url); 
+    res.send(transaction.redirect_url); 
 }
 
+const paymentFinish = async(req, res) => {
+    const {order_id, status_code} = req.query
+    const checkPayment = await afterPayment({order_id, status_code});
+    if(checkPayment.status !== 200){
+        return res.send(checkPayment);
+    }
+    res.redirect(`https://managefranch-client.vercel.app/signup/${checkPayment.token}`);
+    
+}
 
-module.exports = {createAccount, addProduct,login, addFranchise, dropFranchise, createTransaction};
+module.exports = {createAccount, addProduct,login, addFranchise, dropFranchise, createTransaction, paymentFinish};

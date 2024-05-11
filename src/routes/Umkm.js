@@ -3,7 +3,7 @@ const express = require('express')
 const multer = require('multer')
 const path = require('path')
 const {v4:uuid} = require('uuid')
-const {createAccount, login, addFranchise, dropFranchise, addProduct, createTransaction} = require('../controller/Umkm');
+const {createAccount, login, addFranchise, dropFranchise, addProduct, createTransaction, paymentFinish} = require('../controller/Umkm');
 const { default: axios } = require('axios');
 const Tokenizer = require('../model/Token')
 
@@ -28,15 +28,6 @@ router.post('/add/product', addProduct);
 
 router.get('/purchase/:packet', createTransaction)
 
-router.get('/finish', async(req, res) => {
-    const {order_id, status_code, transaction_status} = req.query
-    if(status_code !== "200"){
-        return res.send('transaction pending')
-    }
-    const newToken = new Tokenizer({token:order_id});
-    await newToken.save();
-    console.log(newToken);
-    res.redirect(`https://managefranch-client.vercel.app/signup/${order_id}`);
-})
+router.get('/finish', paymentFinish)
 
 module.exports = router;

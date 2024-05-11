@@ -13,6 +13,10 @@ const tokenSchema = new mongoose.Schema({
         type:Boolean,
         default:false,
         require:true
+    },
+    order_id:{
+        type:String,
+        require:true
     }
 })
 
